@@ -1,23 +1,21 @@
 import unittest
 import app
-# from mock import MagicMock
 from mock import patch
 
 class TestGetUser(unittest.TestCase):
 
-	def test_run(self):
-		get_user = app.GetUser()
-		actual = get_user.run()
+	def test_get_user(self):
+		actual = app.get_user()
 		self.assertEqual(actual, { "name" : "Sam" } )
 
 class TestApp(unittest.TestCase):
 
-	def test_run(self):
-		@patch('__app__.GetUser')
-		def run(self, mock):
-			mock.return_value = { "firstName" : "Sam" }
+	def fake_get_user():
+		return { "firstName" : "Sam" }
 
+	@patch('app.get_user', side_effect=fake_get_user)
+	def test_run(self, fake_get_user):
 		try:
 			app.run()
-		except:
-			self.fail("run raised")
+		except Exception as e:
+			self.fail(e)
